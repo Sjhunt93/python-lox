@@ -7,6 +7,7 @@ class Stmt(ABC):
     class Visitor(ABC):
         def visit_expression_stmt(self, expr): raise NotImplementedError()
         def visit_print_stmt(self, expr): raise NotImplementedError()
+        def visit_var_stmt(self, expr): raise NotImplementedError()
 
     def __init__(self):
         pass
@@ -16,7 +17,7 @@ class Stmt(ABC):
 
 class Expression(Stmt):
     def __init__(self, expr: Expr):
-        self.expr = expr
+        self.expression = expr
     
     def accept(self, visitor: Stmt.Visitor):
         return visitor.visit_expression_stmt(self)
@@ -24,7 +25,16 @@ class Expression(Stmt):
 
 class Print(Stmt):
     def __init__(self, expr: Expr):
-        self.expr = expr
+        self.expression = expr
     
     def accept(self, visitor: Stmt.Visitor):
         return visitor.visit_print_stmt(self)
+
+
+class Var(Stmt):
+    def __init__(self, name: Token, initializer: Expr):
+        self.name = name
+        self.initializer = initializer
+
+    def accept(self, visitor: Stmt.Visitor):
+        return visitor.visit_var_stmt(self)

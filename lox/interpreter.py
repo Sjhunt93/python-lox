@@ -2,16 +2,22 @@ from .expr import Expr, Binary, Unary, Literal, Grouping
 from .token import Token
 from .token_type import TokenType
 from typing import Any
+from .stmt import Stmt, Print, Expression
 
-class Interpreter(Expr.Visitor):
+class Interpreter(Expr.Visitor, Stmt.Visitor):
     class RuntimeError(Exception):
         pass
 
-    def interpret(self, expression: Expr):
+    def interpret(self, statements: list[Stmt]):
         # try:
-        value = self.evaluate(expression)
-        print(self.stringify(value))
-        # except Run
+        try:
+            for statement in statements:
+                self.execute(statement)
+        except Exception as e:
+            raise self.RuntimeError from e
+    
+    def execute(self, stmt: Stmt):
+        stmt.accept(self)
 
     def stringify(self, ob):
         if ob is None:
@@ -24,6 +30,8 @@ class Interpreter(Expr.Visitor):
         else:
             return str(ob)
 
+
+    # ================================ Expr.Visitor ================================
     def visit_binary_expr(self, expr: Binary) -> Any:
         left = self.evaluate(expr.left)
         right = self.evaluate(expr.right)
@@ -109,3 +117,15 @@ class Interpreter(Expr.Visitor):
         if isinstance(left, float) and isinstance(right, float):
             return
         raise self.RuntimeError(f"{op} Operands must be a number.") 
+    
+
+    # ================================ Stmt.Visitor ================================
+
+    def visit_expression_stmt(self, stmt: Expression):
+        self.evaluate(stmt.expression)
+        return None
+    
+    def visit_print_stmt(self, stmt: Print):
+        value = self.evaluate(stmt.expression)
+        print(self.stringify(value))
+        return None

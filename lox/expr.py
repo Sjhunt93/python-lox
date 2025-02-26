@@ -9,6 +9,7 @@ class Expr(ABC):
         def visit_binary_expr(self, expr): raise NotImplementedError()
         def visit_unary_expr(self, expr): raise NotImplementedError()
         def visit_literal_expr(self, expr): raise NotImplementedError()
+        def visit_var_expr(self, expr): raise NotImplementedError()
 
     def __init__(self):
         pass
@@ -46,6 +47,13 @@ class Grouping(Expr):
         self.expression = expression
     def accept(self, visitor):
         return visitor.visit_grouping_expr(self)
+
+class Variable(Expr):
+    def __init__(self, name: Token):
+        self.name = name
+
+    def accept(self, visitor):
+        return visitor.visit_var_expr(self)
 
 
 class AstPrinter(Expr.Visitor):

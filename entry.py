@@ -59,13 +59,14 @@ class Lox:
             print(t)
 
         parser = Parser(tokens)
-        expr = parser.parse()
+        statements = parser.parse()
         if Lox.had_error:
             return
-        print(AstPrinter()._print(expr))
+        
+        # print(AstPrinter()._print(statements))
         
         interpreter = Interpreter()
-        interpreter.interpret(expr)
+        interpreter.interpret(statements)
         
 
 

@@ -116,7 +116,7 @@ class Scanner:
             if c.isdigit():
                 self.parse_number()
             elif self.is_alpha(c):
-                pass
+                self.parse_identifier()
             else:
                 raise self.Error(f"Unexpected character on: {self.line}")
 
@@ -159,7 +159,7 @@ class Scanner:
         
         t = self.source[self.start : self.current]
         token_type = self.KEYWORDS.get(t, TokenType.IDENTIFIER)
-        self.add_token(token_type.IDENTIFIER, None)
+        self.add_token(token_type, None)
 
     def match(self, expected: str):
         if self.is_at_end():
