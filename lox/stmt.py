@@ -5,6 +5,7 @@ from .expr import Expr
 
 class Stmt(ABC):
     class Visitor(ABC):
+        def visit_block_stmt(self, expr): raise NotImplementedError()
         def visit_expression_stmt(self, expr): raise NotImplementedError()
         def visit_print_stmt(self, expr): raise NotImplementedError()
         def visit_var_stmt(self, expr): raise NotImplementedError()
@@ -14,6 +15,13 @@ class Stmt(ABC):
 
     def accept(self, visitor: Visitor):
         pass
+
+class Block(Stmt):
+    def __init__(self, statements: list[Stmt]):
+        self.statements = statements
+
+    def accept(self, visitor: Stmt.Visitor):
+        return visitor.visit_block_stmt(self)    
 
 class Expression(Stmt):
     def __init__(self, expr: Expr):

@@ -1,12 +1,17 @@
-from .expr import Expr, Binary, Unary, Literal, Grouping
+from .expr import Expr, Binary, Unary, Literal, Grouping, Variable, Assign
 from .token import Token
 from .token_type import TokenType
 from typing import Any
-from .stmt import Stmt, Print, Expression
+from .stmt import Stmt, Print, Expression, Var, Block
+from .environment import Environment
+
 
 class Interpreter(Expr.Visitor, Stmt.Visitor):
     class RuntimeError(Exception):
         pass
+    
+    def __init__(self):
+        self.environment = Environment()
 
     def interpret(self, statements: list[Stmt]):
         # try:
@@ -14,10 +19,26 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
             for statement in statements:
                 self.execute(statement)
         except Exception as e:
-            raise self.RuntimeError from e
+            raise self.RuntimeError(e)
     
     def execute(self, stmt: Stmt):
         stmt.accept(self)
+    
+    def execute_block(self, statements: list[Stmt], environment: Environment):
+        previous: Environment = self.environment
+
+        self.environment = environment
+        for statement in statements:
+            self.execute(statement)
+        
+        self.environment = previous
+
+
+
+    def visit_block_stmt(self, stmt: Block):
+        self.execute_block(stmt.statements, Environment(self.environment))
+        return None
+
 
     def stringify(self, ob):
         if ob is None:
@@ -129,3 +150,18 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
         value = self.evaluate(stmt.expression)
         print(self.stringify(value))
         return None
+    
+    def visit_var_stmt(self, stmt: Var):
+        value = None
+        if stmt.initializer:
+            value = self.evaluate(stmt.initializer)
+        
+        self.environment.define(stmt.name.lexeme, value)
+        return None
+    
+    def visit_assign_expr(self, expr: Assign):
+        value = self.evaluate(expr.value)
+        self.environment.ass
+
+    def visit_var_expr(self, expr: Variable):
+        return self.environment.get(expr.name)

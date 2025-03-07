@@ -7,6 +7,7 @@ from lox.interpreter import Interpreter
 
 class Lox:
 
+    interpreter = Interpreter()
     had_error = False
     had_runtime_error = False
 
@@ -55,8 +56,8 @@ class Lox:
     def run(source):
         scanner = Scanner(source)
         tokens = scanner.scan_tokens()
-        for t in tokens:
-            print(t)
+        # for t in tokens:
+        #     print(t)
 
         parser = Parser(tokens)
         statements = parser.parse()
@@ -65,8 +66,8 @@ class Lox:
         
         # print(AstPrinter()._print(statements))
         
-        interpreter = Interpreter()
-        interpreter.interpret(statements)
+        
+        Lox.interpreter.interpret(statements)
         
 
 
