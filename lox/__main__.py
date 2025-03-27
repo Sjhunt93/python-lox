@@ -1,10 +1,15 @@
 import sys
 
-from .scanner import Scanner
+from lox.scanner import Scanner
+from lox.parser import Parser
+from lox.expr import AstPrinter
+from lox.interpreter import Interpreter
 
 class Lox:
 
+    interpreter = Interpreter()
     had_error = False
+    had_runtime_error = False
 
     @staticmethod
     def error(line, message):
@@ -30,7 +35,9 @@ class Lox:
         with open(filename, "r") as file:
             Lox.run(file.read())
         if Lox.had_error:
-            raise RuntimeError("..")
+            sys.exit(65)
+        if Lox.had_runtime_error:
+            sys.exit(70)
 
     @staticmethod
     def run_prompt():
@@ -49,8 +56,21 @@ class Lox:
     def run(source):
         scanner = Scanner(source)
         tokens = scanner.scan_tokens()
-        for t in tokens:
-            print(t)
+        # for t in tokens:
+        #     print(t)
+
+        parser = Parser(tokens)
+        statements = parser.parse()
+        if Lox.had_error:
+            return
+        
+        # print(AstPrinter()._print(statements))
+        
+        
+        r = Lox.interpreter.interpret(statements)
+        if r:
+            print(r)
+        
 
 if __name__ == "__main__":
     Lox.main()

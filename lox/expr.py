@@ -4,11 +4,17 @@ from .token import Token
 
 class Expr(ABC):
     class Visitor(ABC):
-        def visit_assign_expr(self, expr): raise NotImplementedError()
-        def visit_grouping_expr(self, expr): raise NotImplementedError()
+        def visit_assign_expr(self, expr: "Assign"): raise NotImplementedError()
         def visit_binary_expr(self, expr): raise NotImplementedError()
-        def visit_unary_expr(self, expr): raise NotImplementedError()
+        def visit_call_expr(self, expr): raise NotImplementedError()
+        def visit_get_expr(self, expr): raise NotImplementedError()
+        def visit_grouping_expr(self, expr): raise NotImplementedError()
         def visit_literal_expr(self, expr): raise NotImplementedError()
+        def visit_logical_expr(self, expr): raise NotImplementedError()
+        def visit_set_expr(self, expr): raise NotImplementedError()
+        def visit_super_expr(self, expr): raise NotImplementedError()
+        def visit_this_expr(self, expr): raise NotImplementedError()
+        def visit_unary_expr(self, expr): raise NotImplementedError()
         def visit_var_expr(self, expr): raise NotImplementedError()
 
     def __init__(self):

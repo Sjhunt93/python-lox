@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debug (Current Working Directory)",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}", 
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",  // Ensures it starts in the workspace folder
+            "env": {
+                "PYTHONPATH": "${cwd}"  // Ensures Python searches for modules in the CWD
+            }
+        }
+    ]
+}

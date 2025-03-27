@@ -16,13 +16,15 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
     def interpret(self, statements: list[Stmt]):
         # try:
         try:
+            r = 0
             for statement in statements:
-                self.execute(statement)
+                r = self.execute(statement)
+            return r
         except Exception as e:
             raise self.RuntimeError(e)
     
     def execute(self, stmt: Stmt):
-        stmt.accept(self)
+        return stmt.accept(self)
     
     def execute_block(self, statements: list[Stmt], environment: Environment):
         previous: Environment = self.environment
@@ -143,8 +145,8 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
     # ================================ Stmt.Visitor ================================
 
     def visit_expression_stmt(self, stmt: Expression):
-        self.evaluate(stmt.expression)
-        return None
+        return self.evaluate(stmt.expression)
+        # return None
     
     def visit_print_stmt(self, stmt: Print):
         value = self.evaluate(stmt.expression)
