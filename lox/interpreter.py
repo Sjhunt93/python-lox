@@ -1,8 +1,8 @@
-from .expr import Expr, Binary, Unary, Literal, Grouping, Variable, Assign
+from .expr import Expr, Binary, Unary, Literal, Grouping, Variable, Assign, Logical
 from .token import Token
 from .token_type import TokenType
 from typing import Any
-from .stmt import Stmt, Print, Expression, Var, Block
+from .stmt import Stmt, Print, Expression, Var, Block, If
 from .environment import Environment
 
 
@@ -107,7 +107,32 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
 
     def visit_literal_expr(self, expr: Literal):
         return expr.value
+    
+    def visit_logical_expr(self, expr: Logical):
+        left = self.evaluate(expr.left)
+        
+        if expr.op.type == TokenType.OR:
+            if self.is_truthy(left):
+                return left
+        else:
+            if not self.is_truthy(left):
+                return left
+        
+        return self.evaluate(expr.right)
 
+
+#   @Override
+#   public Object visitLogicalExpr(Expr.Logical expr) {
+#     Object left = evaluate(expr.left);
+
+#     if (expr.operator.type == TokenType.OR) {
+#       if (isTruthy(left)) return left;
+#     } else {
+#       if (!isTruthy(left)) return left;
+#     }
+
+#     return evaluate(expr.right);
+#   }
 
     def visit_grouping_expr(self, expr: Grouping):
         return self.evaluate(expr.expression)
@@ -148,6 +173,13 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
         return self.evaluate(stmt.expression)
         # return None
     
+    def visit_if_stmt(self, stmt: If):
+        if self.is_truthy(self.evaluate(stmt.condition)):
+            self.execute(stmt.then_branch)
+        elif stmt.else_branch != None:
+            self.execute(stmt.else_branch)
+        return None
+
     def visit_print_stmt(self, stmt: Print):
         value = self.evaluate(stmt.expression)
         print(self.stringify(value))

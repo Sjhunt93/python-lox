@@ -8,6 +8,7 @@ class Stmt(ABC):
         def visit_block_stmt(self, expr): raise NotImplementedError()
         def visit_expression_stmt(self, expr): raise NotImplementedError()
         def visit_print_stmt(self, expr): raise NotImplementedError()
+        def visit_if_stmt(self, expr): raise NotImplementedError()
         def visit_var_stmt(self, expr): raise NotImplementedError()
 
     def __init__(self):
@@ -29,7 +30,16 @@ class Expression(Stmt):
     
     def accept(self, visitor: Stmt.Visitor):
         return visitor.visit_expression_stmt(self)
+
+class If(Stmt):
+    def __init__(self, condition: Expr, then_branch: Stmt, else_branch: Stmt):
+        self.condition = condition
+        self.then_branch = then_branch
+        self.else_branch = else_branch
+        super().__init__()    
     
+    def accept(self, visitor: Stmt.Visitor):
+        return visitor.visit_if_stmt(self)
 
 class Print(Stmt):
     def __init__(self, expr: Expr):

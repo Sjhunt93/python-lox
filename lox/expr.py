@@ -57,6 +57,15 @@ class Literal(Expr):
     def accept(self, visitor):
         return visitor.visit_literal_expr(self)
 
+class Logical(Expr):
+    def __init__(self, left: Expr, op: Token, right: Expr):
+        self.left = left
+        self.op = op
+        self.right = right
+    
+    def accept(self, visitor):
+        return visitor.visit_logical_expr(self)
+
 class Grouping(Expr):
     def __init__(self, expression):
         self.expression = expression
