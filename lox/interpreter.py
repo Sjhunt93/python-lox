@@ -2,7 +2,7 @@ from .expr import Expr, Binary, Unary, Literal, Grouping, Variable, Assign, Logi
 from .token import Token
 from .token_type import TokenType
 from typing import Any
-from .stmt import Stmt, Print, Expression, Var, Block, If
+from .stmt import Stmt, Print, Expression, Var, Block, If, While
 from .environment import Environment
 
 
@@ -119,6 +119,14 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
                 return left
         
         return self.evaluate(expr.right)
+    
+    def visit_while_stmt(self, stmt: While):
+        
+        while self.is_truthy(self.evaluate(stmt.condition)):
+            
+            self.execute(stmt.body)
+        
+        return None
 
 
 #   @Override
@@ -144,10 +152,13 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
         # TODO: check this is true in pythonx
         if ob is None:
             return False
+        if ob == 0.0 or ob == 0:
+            return False
         if isinstance(ob, bool):
             return bool(ob)
         else:
             return True
+        
     def is_equal(self, a, b):
         if a is None and b is None:
             return True
@@ -195,7 +206,8 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
     
     def visit_assign_expr(self, expr: Assign):
         value = self.evaluate(expr.value)
-        self.environment.ass
+        self.environment.assign(expr.name, value)
+        return value
 
     def visit_var_expr(self, expr: Variable):
         return self.environment.get(expr.name)

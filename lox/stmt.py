@@ -10,6 +10,8 @@ class Stmt(ABC):
         def visit_print_stmt(self, expr): raise NotImplementedError()
         def visit_if_stmt(self, expr): raise NotImplementedError()
         def visit_var_stmt(self, expr): raise NotImplementedError()
+        def visit_while_stmt(self, expr): raise NotImplementedError()
+        def visit_for_stmt(self, expr): raise NotImplementedError()
 
     def __init__(self):
         pass
@@ -56,3 +58,11 @@ class Var(Stmt):
 
     def accept(self, visitor: Stmt.Visitor):
         return visitor.visit_var_stmt(self)
+
+class While(Stmt):
+    def __init__(self, condition: Expr, body: Stmt):
+        self.condition = condition
+        self.body = body
+
+    def accept(self, visitor: Stmt.Visitor):
+        return visitor.visit_while_stmt(self)

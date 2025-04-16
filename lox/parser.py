@@ -1,7 +1,7 @@
 from .token import Token
 from .token_type import TokenType
 from .expr import Expr, Binary, Unary, Literal, Grouping, Variable, Assign, Logical
-from .stmt import Stmt, Print, Expression, Var, Block, If
+from .stmt import Stmt, Print, Expression, Var, Block, If, While
 from .exceptions import error_report
 
 class Parser:
@@ -43,8 +43,10 @@ class Parser:
         if self.match(TokenType.IF):
             return self.if_statement()
 
-        if self.match(TokenType.PRINT):
+        elif self.match(TokenType.PRINT):
             return self.print_statement()
+        elif self.match(TokenType.WHILE):
+            return self.while_statement()
         elif self.match(TokenType.LEFT_BRACE):
             return Block(self.block())
         else:
@@ -70,6 +72,15 @@ class Parser:
         value = self.expression()
         self.consume(TokenType.SEMICOLON, "Expect ';' after value.")
         return Print(value)
+    
+    def while_statement(self) -> Stmt:
+        self.consume(TokenType.LEFT_PAREN, "Expect '(' after 'while'.")
+        condition = self.expression()
+        self.consume(TokenType.RIGHT_PAREN, "Expect ')' after condition.")
+        body = self.statement()
+        return While(condition, body)
+
+
 
     def expression_statement(self) -> Stmt:
         expr = self.expression()
