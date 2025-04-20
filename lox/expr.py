@@ -32,6 +32,15 @@ class Assign(Expr):
     def accept(self, visitor: Expr.Visitor):
         return visitor.visit_assign_expr(self)
 
+class Call(Expr):
+    def __init__(self, callee: Expr, paren: Token, arguments: list[Expr]):
+        self.callee = callee
+        self.paren = paren
+        self.arguments = arguments
+    
+    def accept(self, visitor: Expr.Visitor):
+        return visitor.visit_call_expr(self)
+
 class Binary(Expr):
 
     def __init__(self, left: Expr, op: Token, right: Expr):

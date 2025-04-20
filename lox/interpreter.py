@@ -1,9 +1,10 @@
-from .expr import Expr, Binary, Unary, Literal, Grouping, Variable, Assign, Logical
+from .expr import Expr, Binary, Unary, Literal, Grouping, Variable, Assign, Logical, Call
 from .token import Token
 from .token_type import TokenType
 from typing import Any
 from .stmt import Stmt, Print, Expression, Var, Block, If, While
 from .environment import Environment
+from .lox_callable import LoxCallable, Clock
 
 
 class Interpreter(Expr.Visitor, Stmt.Visitor):
@@ -11,7 +12,10 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
         pass
     
     def __init__(self):
-        self.environment = Environment()
+        self._globals = Environment()
+        self.environment = self._globals
+
+        self._globals.define("clock", Clock())
 
     def interpret(self, statements: list[Stmt]):
         # try:
@@ -95,6 +99,25 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
             return self.is_equal(left, right)
         return None
 
+    def visit_call_expr(self, expr: Call):
+        callee = self.evaluate(expr.callee)
+
+        arguments = []
+        for arg in expr.arguments:
+            arguments.append(self.evaluate(arg))
+        breakpoint()
+        if not isinstance(callee, LoxCallable):
+            raise self.RuntimeError("Can only call functions and classes.")
+        
+        function: LoxCallable = callee
+        if len(arguments) != function.arity():
+            raise self.RuntimeError("Expected " +
+                function.arity() + " arguments but got " +
+                len(arguments) + ".")
+
+        return function.call(self, arguments)
+        
+
     def visit_unary_expr(self, expr: Unary):
         right = self.evaluate(expr.right)
         T = expr.op.type
@@ -127,6 +150,7 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
             self.execute(stmt.body)
         
         return None
+    
 
 
 #   @Override
