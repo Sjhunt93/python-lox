@@ -2,9 +2,10 @@ from .expr import Expr, Binary, Unary, Literal, Grouping, Variable, Assign, Logi
 from .token import Token
 from .token_type import TokenType
 from typing import Any
-from .stmt import Stmt, Print, Expression, Var, Block, If, While
+from .stmt import Stmt, Print, Expression, Var, Block, If, While, Function
 from .environment import Environment
 from .lox_callable import LoxCallable, Clock
+from .lox_function import LoxFunction
 
 
 class Interpreter(Expr.Visitor, Stmt.Visitor):
@@ -206,7 +207,11 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
 
     def visit_expression_stmt(self, stmt: Expression):
         return self.evaluate(stmt.expression)
-        # return None
+    
+    def visit_function_stmt(self, stmt: Function):
+        function = LoxFunction(stmt)
+        self.environment.define(stmt.name.lexeme, function)
+        return None
     
     def visit_if_stmt(self, stmt: If):
         if self.is_truthy(self.evaluate(stmt.condition)):

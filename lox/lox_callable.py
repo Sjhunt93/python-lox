@@ -4,10 +4,10 @@ import time
 class LoxCallable:
 
     # def call(interpreter: Interpreter, arguments: list):
-    def arity() -> int:
+    def arity(self) -> int:
         return 0
     
-    def call(interpreter, arguments: list):
+    def call(self, interpreter, arguments: list):
         pass
 
     def __str__(self):
@@ -15,10 +15,10 @@ class LoxCallable:
 
 
 class Clock(LoxCallable):
-    def arity(self):
+    def arity(self) -> int:
         return 0
 
-    def call(self, interpreter, arguments):
+    def call(self, interpreter, arguments: list):
         return time.time()
 
     def __str__(self):
