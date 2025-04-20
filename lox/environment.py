@@ -24,7 +24,7 @@ class Environment:
             raise self.EnvException(f" {name} Undefined variable {name.lexeme} .")
 
     def assign(self, name: Token, value: Any):
-        print(f"assign: {name.lexeme} = {value} : {self.enclosing}")
+        # print(f"assign: {name.lexeme} = {value} : {self.enclosing}")
         if name.lexeme in self.values:
             self.values[name.lexeme] = value
         elif self.enclosing: 

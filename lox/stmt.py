@@ -66,3 +66,5 @@ class While(Stmt):
 
     def accept(self, visitor: Stmt.Visitor):
         return visitor.visit_while_stmt(self)
+
+# class For(Stmt):
