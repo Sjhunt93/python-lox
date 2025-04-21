@@ -35,10 +35,12 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
         previous: Environment = self.environment
 
         self.environment = environment
-        for statement in statements:
-            self.execute(statement)
-        
-        self.environment = previous
+        try:
+            for statement in statements:
+                self.execute(statement)
+        # horrid edge case
+        finally:
+            self.environment = previous
 
 
 
@@ -106,7 +108,7 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
         arguments = []
         for arg in expr.arguments:
             arguments.append(self.evaluate(arg))
-        breakpoint()
+        
         if not isinstance(callee, LoxCallable):
             raise self.RuntimeError("Can only call functions and classes.")
         
