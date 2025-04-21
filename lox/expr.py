@@ -1,6 +1,7 @@
 from abc import ABC
 
 from .token import Token
+from copy import deepcopy
 
 class Expr(ABC):
     class Visitor(ABC):
@@ -62,7 +63,8 @@ class Unary(Expr):
 
 class Literal(Expr):
     def __init__(self, value):
-        self.value = value
+        # not sure if this is needed or not
+        self.value = deepcopy(value)
     def accept(self, visitor):
         return visitor.visit_literal_expr(self)
 

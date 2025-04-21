@@ -2,7 +2,7 @@ from .expr import Expr, Binary, Unary, Literal, Grouping, Variable, Assign, Logi
 from .token import Token
 from .token_type import TokenType
 from typing import Any
-from .stmt import Stmt, Print, Expression, Var, Block, If, While, Function
+from .stmt import Stmt, Print, Expression, Var, Block, If, While, Function, Return
 from .environment import Environment
 from .lox_callable import LoxCallable, Clock
 from .lox_function import LoxFunction
@@ -11,6 +11,10 @@ from .lox_function import LoxFunction
 class Interpreter(Expr.Visitor, Stmt.Visitor):
     class RuntimeError(Exception):
         pass
+
+    class Return(Exception):
+        def __init__(self, value):
+            self.value = value
     
     def __init__(self):
         self._globals = Environment()
@@ -95,6 +99,7 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
             if isinstance(left, str) and isinstance(right, str):
                 return left + right
             else:
+                return str(left) + str(right)
                 raise self.RuntimeError(f"{expr} Operands must be two numbers or two strings.") 
         if T == TokenType.BANG_EQUAL:
             return not self.is_equal(left, right)
@@ -226,6 +231,12 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
         value = self.evaluate(stmt.expression)
         print(self.stringify(value))
         return None
+
+    def visit_return_stmt(self, stmt: Return):
+        value = None
+        if stmt.value != None:
+            value = self.evaluate(stmt.value)
+        raise self.Return(value)
     
     def visit_var_stmt(self, stmt: Var):
         value = None

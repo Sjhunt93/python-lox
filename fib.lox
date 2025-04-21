@@ -1,0 +1,15 @@
+fun fib(n) {
+  print "→ fib(" + n + ")";
+  if (n <= 1) {
+    print "← return " + n;
+    return n;
+  }
+
+  var aa = fib(n - 1);
+  var bb = fib(n - 2);
+  var result = aa + bb;
+  print "← fib(" + n + ") = " + aa + " + " + bb + " = " + result;
+  return result;
+}
+
+print fib(10);

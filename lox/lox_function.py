@@ -11,7 +11,14 @@ class LoxFunction(LoxCallable):
         for i in range(len(self.declaration.params)):
             environment.define(self.declaration.params[i].lexeme, arguments[i])
 
-        interpreter.execute_block(self.declaration.body, environment)
+        print(vars(environment))
+        try:
+            interpreter.execute_block(self.declaration.body, environment)
+        except interpreter.Return as e:
+            return e.value
+        
+        return None
+
 
     def arity(self):
         return len(self.declaration.params)

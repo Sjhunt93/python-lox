@@ -1,7 +1,7 @@
 from .token import Token
 from .token_type import TokenType
 from .expr import Expr, Binary, Unary, Literal, Grouping, Variable, Assign, Logical, Call
-from .stmt import Stmt, Print, Expression, Var, Block, If, While, Function
+from .stmt import Stmt, Print, Expression, Var, Block, If, While, Function, Return
 from .exceptions import error_report
 
 class Parser:
@@ -48,6 +48,8 @@ class Parser:
             return self.if_statement()
         elif self.match(TokenType.PRINT):
             return self.print_statement()
+        elif self.match(TokenType.RETURN):
+            return self.return_statement()
         elif self.match(TokenType.WHILE):
             return self.while_statement()
         elif self.match(TokenType.LEFT_BRACE):
@@ -110,6 +112,15 @@ class Parser:
         self.consume(TokenType.SEMICOLON, "Expect ';' after value.")
         return Print(value)
     
+    def return_statement(self) -> Stmt:
+        keyword = self.previous()
+        value: Expr = None
+        if not self.check(TokenType.SEMICOLON):
+            value = self.expression()
+        
+        self.consume(TokenType.SEMICOLON, "Expect ';' after return value.")
+        return Return(keyword, value)
+
     def while_statement(self) -> Stmt:
         self.consume(TokenType.LEFT_PAREN, "Expect '(' after 'while'.")
         condition = self.expression()
@@ -138,8 +149,7 @@ class Parser:
                 )
                 if not self.match(TokenType.COMMA):
                     break
-            self.consume(TokenType.RIGHT_PAREN, "Expect ')' after parameters.")
-        
+        self.consume(TokenType.RIGHT_PAREN, "Expect ')' after parameters.")
         self.consume(TokenType.LEFT_BRACE, "Expect '{' before " + kind + " body.")
         body = self.block()
         return Function(name, parameters, body)

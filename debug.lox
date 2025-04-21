@@ -1,0 +1,55 @@
+print "1 + 2 = " + (1 + 2);           // Expect: 3
+print "5 - 3 = " + (5 - 3);           // Expect: 2
+print "4 * 2 = " + (4 * 2);           // Expect: 8
+print "8 / 2 = " + (8 / 2);           // Expect: 4
+print "3 > 2: " + (3 > 2);            // Expect: true
+print "3 <= 3: " + (3 <= 3);          // Expect: true
+print "5 == 5: " + (5 == 5);          // Expect: true
+print "5 != 4: " + (5 != 4);          // Expect: true
+
+var x = 10;
+print "x = " + x;                     // Expect: 10
+
+{
+  var y = 20;
+  print "x + y = " + (x + y);         // Expect: 30
+}
+
+var result = "unset";
+if (true) result = "if-branch";
+print result;                         // Expect: if-branch
+
+if (false) {
+  print "should not run";
+} else {
+  print "else branch works";          // Expect: else branch works
+}
+
+var total = 0;
+for (var i = 0; i < 5; i = i + 1) {
+  total = total + i;
+}
+print "Sum 0..4: " + total;           // Expect: 10
+
+
+fun add(a, b) {
+  return a + b;
+}
+print "add(3, 4): " + add(3, 4);      // Expect: 7
+
+fun identity(x) {
+  return x;
+}
+print identity("hello");              // Expect: hello
+
+fun test() {
+  return 123;
+}
+var value = test();
+print "test() returned: " + value;    // Expect: 123
+
+fun noReturn() {
+  var x = 10;
+}
+var result = noReturn();
+print "noReturn() is: " + result;     // Expect: nil (or interpreter's nil value)

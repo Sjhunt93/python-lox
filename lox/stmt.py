@@ -10,6 +10,7 @@ class Stmt(ABC):
         def visit_print_stmt(self, expr): raise NotImplementedError()
         def visit_function_stmt(self, expr): raise NotImplementedError()
         def visit_if_stmt(self, expr): raise NotImplementedError()
+        def visit_return_stmt(self, expr): raise NotImplementedError()
         def visit_var_stmt(self, expr): raise NotImplementedError()
         def visit_while_stmt(self, expr): raise NotImplementedError()
         def visit_for_stmt(self, expr): raise NotImplementedError()
@@ -68,6 +69,14 @@ class Var(Stmt):
 
     def accept(self, visitor: Stmt.Visitor):
         return visitor.visit_var_stmt(self)
+
+class Return(Stmt):
+    def __init__(self, keyword: Token, value: Expr):
+        self.keyword = keyword
+        self.value = value
+
+    def accept(self, visitor: Stmt.Visitor):
+        return visitor.visit_return_stmt(self)
 
 class While(Stmt):
     def __init__(self, condition: Expr, body: Stmt):
