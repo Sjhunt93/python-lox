@@ -4,6 +4,7 @@ from lox.scanner import Scanner
 from lox.parser import Parser
 from lox.expr import AstPrinter
 from lox.interpreter import Interpreter
+from lox.resolver import Resolver
 
 class Lox:
 
@@ -22,6 +23,7 @@ class Lox:
 
     @staticmethod
     def main():
+        Lox.run_file("hello.lox")
         if len(sys.argv) > 2:
             print("Usage: lox [script]")
             sys.exit(64)
@@ -66,6 +68,11 @@ class Lox:
         
         # print(AstPrinter()._print(statements))
         
+        resolver = Resolver(Lox.interpreter)
+        resolver.resolve(statements)
+        
+        if Lox.had_error:
+            return
         
         r = Lox.interpreter.interpret(statements)
         if r:

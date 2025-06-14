@@ -23,6 +23,12 @@ class Environment:
         else:
             raise self.EnvException(f" {name} Undefined variable {name.lexeme} .")
 
+    def get_at(self, distance: int, name: str):
+        return self.ancestor(distance).values[name]
+
+    def assign_at(self, distance: int, name: Token, value: Any):
+        self.ancestor(distance).values[name] = value
+
     def assign(self, name: Token, value: Any):
         # print(f"assign: {name.lexeme} = {value} : {self.enclosing}")
         print(f"Looking up '{name.lexeme}' in {self.values}")
@@ -33,3 +39,9 @@ class Environment:
             self.enclosing.assign(name, value)
         else:
             raise self.EnvException(f" {name} Undefined variable {name.lexeme} .")
+    
+    def ancestor(self, distance: int) -> "Environment":
+        env = self
+        for i in range(distance):
+            env = env.enclosing
+        return env

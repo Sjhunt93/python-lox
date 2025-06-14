@@ -1,18 +1,5 @@
-var a = 5;
-// if (a < 10) print "a";
-// if (a < 12) print "b";
-// else print "tim";
-
-
-while (a) {
-    print "hello";
-    a = a - 1;
+fun bad() {
+    var a = "first";
+    print a;
 }
-
-
-// if (a < 10) {
-//     print "yes"; 
-// }
-// else {
-//     print "no";
-// }
+bad();

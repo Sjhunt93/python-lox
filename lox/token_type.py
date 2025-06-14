@@ -49,3 +49,7 @@ class TokenType(Enum):
 
     # End of File
     EOF = auto()
+
+class FunctionType(Enum):
+    NONE = auto()
+    FUNCTION = auto()

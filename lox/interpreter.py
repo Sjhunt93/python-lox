@@ -19,7 +19,7 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
     def __init__(self):
         self._globals = Environment()
         self.environment = self._globals
-
+        self._locals = {}
         self._globals.define("clock", Clock())
 
     def interpret(self, statements: list[Stmt]):
@@ -34,6 +34,10 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
     
     def execute(self, stmt: Stmt):
         return stmt.accept(self)
+    
+    def resolve(self, expr: Expr, depth: int):
+        self._locals[expr] = depth
+
     
     def execute_block(self, statements: list[Stmt], environment: Environment):
         previous: Environment = self.environment
@@ -216,7 +220,7 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
         return self.evaluate(stmt.expression)
     
     def visit_function_stmt(self, stmt: Function):
-        function = LoxFunction(stmt)
+        function = LoxFunction(stmt, self.environment)
         self.environment.define(stmt.name.lexeme, function)
         return None
     
@@ -248,8 +252,22 @@ class Interpreter(Expr.Visitor, Stmt.Visitor):
     
     def visit_assign_expr(self, expr: Assign):
         value = self.evaluate(expr.value)
-        self.environment.assign(expr.name, value)
+        # self.environment.assign(expr.name, value)
+        distance = self._locals.get(expr)
+        if distance:
+            self.environment.assign_at(distance, expr.name, value)
+        else:
+            self._globals[expr.name] = value
         return value
 
     def visit_var_expr(self, expr: Variable):
-        return self.environment.get(expr.name)
+        # return 
+        return self.lookup_variable(expr.name, expr)
+        # return self.environment.get(expr.name)
+
+    def lookup_variable(self, name: Token, expr: Expr):
+        distance = self._locals.get(expr)
+        if distance is not None:
+            return self.environment.get_at(distance, name.lexeme)
+        else:
+            return self._globals.get(name)

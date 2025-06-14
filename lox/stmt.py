@@ -5,15 +5,15 @@ from .expr import Expr
 
 class Stmt(ABC):
     class Visitor(ABC):
-        def visit_block_stmt(self, expr): raise NotImplementedError()
-        def visit_expression_stmt(self, expr): raise NotImplementedError()
-        def visit_print_stmt(self, expr): raise NotImplementedError()
-        def visit_function_stmt(self, expr): raise NotImplementedError()
-        def visit_if_stmt(self, expr): raise NotImplementedError()
-        def visit_return_stmt(self, expr): raise NotImplementedError()
-        def visit_var_stmt(self, expr): raise NotImplementedError()
-        def visit_while_stmt(self, expr): raise NotImplementedError()
-        def visit_for_stmt(self, expr): raise NotImplementedError()
+        def visit_block_stmt(self, stmt): raise NotImplementedError()
+        def visit_expression_stmt(self, stmt): raise NotImplementedError()
+        def visit_print_stmt(self, stmt): raise NotImplementedError()
+        def visit_function_stmt(self, stmt): raise NotImplementedError()
+        def visit_if_stmt(self, stmt): raise NotImplementedError()
+        def visit_return_stmt(self, stmt): raise NotImplementedError()
+        def visit_var_stmt(self, stmt): raise NotImplementedError()
+        def visit_while_stmt(self, stmt): raise NotImplementedError()
+        def visit_for_stmt(self, stmt): raise NotImplementedError()
 
     def __init__(self):
         pass
